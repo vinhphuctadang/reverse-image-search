@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "tNHQsuMOOyCCLJokFSHewpxzdK9abtIfGDwv4QCs1cqePbmJZ+rv0vuFH/8hHWaN1cMUQ/d0ROusH1c48YCvuA==",
+  "success": true,
+  "projectFilePath": "/Users/tadangvinhphuc/projects/image-search/image-indexer/image-indexer.csproj",
+  "expectedPackageFiles": [
+    "/Users/tadangvinhphuc/.nuget/packages/keras.net/3.8.5/keras.net.3.8.5.nupkg.sha512",
+    "/Users/tadangvinhphuc/.nuget/packages/microsoft.csharp/4.5.0/microsoft.csharp.4.5.0.nupkg.sha512",
+    "/Users/tadangvinhphuc/.nuget/packages/numpy.bare/3.8.1.25/numpy.bare.3.8.1.25.nupkg.sha512",
+    "/Users/tadangvinhphuc/.nuget/packages/pythonnet_netstandard_py38_win/2.5.1/pythonnet_netstandard_py38_win.2.5.1.nupkg.sha512"
+  ],
+  "logs": []
+}
