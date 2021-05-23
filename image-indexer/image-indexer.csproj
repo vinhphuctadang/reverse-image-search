@@ -2,12 +2,24 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net47</TargetFramework>
     <RootNamespace>image_indexer</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Keras.NET" Version="3.8.5" />
+    <Reference Include="Python.Runtime">
+      <HintPath>C:\Users\world\AppData\Local\Programs\Python\Python36\Lib\site-packages\Python.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="pythonHelper.py">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,12 @@
+D:\projects\reverse-image-search\image-indexer\bin\Debug\net47\image-indexer.exe.config
+D:\projects\reverse-image-search\image-indexer\bin\Debug\net47\image-indexer.exe
+D:\projects\reverse-image-search\image-indexer\bin\Debug\net47\image-indexer.pdb
+D:\projects\reverse-image-search\image-indexer\bin\Debug\net47\Python.Runtime.dll
+D:\projects\reverse-image-search\image-indexer\obj\Debug\net47\image-indexer.csprojAssemblyReference.cache
+D:\projects\reverse-image-search\image-indexer\obj\Debug\net47\image-indexer.AssemblyInfoInputs.cache
+D:\projects\reverse-image-search\image-indexer\obj\Debug\net47\image-indexer.AssemblyInfo.cs
+D:\projects\reverse-image-search\image-indexer\obj\Debug\net47\image-indexer.csproj.CoreCompileInputs.cache
+D:\projects\reverse-image-search\image-indexer\obj\Debug\net47\image-indexer.csproj.CopyComplete
+D:\projects\reverse-image-search\image-indexer\obj\Debug\net47\image-indexer.exe
+D:\projects\reverse-image-search\image-indexer\obj\Debug\net47\image-indexer.pdb
+D:\projects\reverse-image-search\image-indexer\bin\Debug\net47\pythonHelper.py
