@@ -16,7 +16,9 @@ namespace image_indexer
         static dynamic tensorflowVgg16; // Py.Import("tensorflow.keras.applications.vgg16");
         static dynamic preprocessInput; // tensorflowVgg16.preprocess_input;
         static dynamic numpy;
-        static dynamic annoy;
+        // static dynamic annoy;
+        static dynamic faiss;
+
         static dynamic model;
         // matplotlib
         static dynamic plt;
@@ -33,13 +35,10 @@ namespace image_indexer
             tensorflowVgg16 = Py.Import("tensorflow.keras.applications.vgg16");
             preprocessInput = tensorflowVgg16.preprocess_input;
             numpy = Py.Import("numpy");
-            annoy = Py.Import("annoy");
-            plt = Py.Import("matplotlib.pyplot");
-
-
+            faiss = Py.Import("faiss");
+            plt   = Py.Import("matplotlib.pyplot");
             // get current directory
             currentDir = Directory.GetCurrentDirectory();
-
             // load model
             modelDir = currentDir + @"\..\model\mobilenetv2_notop";
             Console.WriteLine("model dir:" + modelDir);
@@ -126,6 +125,7 @@ namespace image_indexer
                 Init();
                 var path = currentDir + @"\test-data\";                              
 
+                Console.WriteLine("Importing data");
                 // load image to list
                 var imageList = ImportData(path);
 
@@ -133,20 +133,16 @@ namespace image_indexer
                 var featurizedData = Featurize(imageList);
                 
                 // build index
-                dynamic index = annoy.AnnoyIndex(62720, "angular");
-
-                int ID = 0;
-                foreach(var imageFeature in featurizedData) {
-                    index.add_item(ID++, imageFeature);
-                }
-
-                // build 6 trees
-                index.build(6);
+                var dimension = 62720;
+                dynamic quantiser = faiss.IndexFlatL2(dimension);  
+                dynamic index = faiss.IndexIVFFlat(quantiser, dimension , 3, faiss.METRIC_L2);
+                
+                index.train(featurizedData);
+                index.add(featurizedData);
 
                 // search for image
                 var imageToSearch = featurizedData[0];
-
-                var hits = index.get_nns_by_vector(imageToSearch, 5, search_k: 3, include_distances: false);
+                var hits = index.search(imageToSearch, 3);
                 Console.WriteLine("hits: " + String.Join(", ", hits));
 
                 showHits(imageList, imageList[0], hits);
@@ -154,3 +150,6 @@ namespace image_indexer
         }
     }
 }
+
+
+// reference: https://towardsdatascience.com/understanding-faiss-619bb6db2d1a, L2 stands for euclidean distance
