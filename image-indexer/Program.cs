@@ -29,12 +29,12 @@ namespace image_indexer
 
         static void Init() {
             // import modules
+            numpy = Py.Import("numpy");
             image_processor = Py.Import("tensorflow.keras.preprocessing.image");
             kerasApplications = Py.Import("tensorflow.keras.applications");
             mobileNet = kerasApplications.MobileNetV2;
             tensorflowVgg16 = Py.Import("tensorflow.keras.applications.vgg16");
             preprocessInput = tensorflowVgg16.preprocess_input;
-            numpy = Py.Import("numpy");
             faiss = Py.Import("faiss");
             plt   = Py.Import("matplotlib.pyplot");
             // get current directory
@@ -65,8 +65,8 @@ namespace image_indexer
             }
             return imageList;
         }
-        static List<dynamic> Featurize(List<dynamic> imageList){
-            var result = new List<dynamic>();
+        static dynamic Featurize(List<dynamic> imageList){
+            // var result = new List<dynamic>();
             
             // preprocess imageList:
             var processedImages = new List<dynamic>();
@@ -81,10 +81,13 @@ namespace image_indexer
 
             // call model predict and flatten value to 1-dim array
             var prediction = model.predict(arr);
-            foreach(var x in prediction) {
-                result.Add(x.flatten());
+            var maps = new List<dynamic>();
+            foreach(var featureMap in prediction) {
+                maps.Add(featureMap.flatten());
             }
-            return result;
+            
+            // Console.WriteLine("Shape: " + prediction.shape.ToString());
+            return numpy.array(maps);
         }
 
         static void showHits(List<dynamic> imageList, dynamic srcImage, dynamic hits){
@@ -109,17 +112,20 @@ namespace image_indexer
         static void Main(string[] args)
         {
             // // config path for ready-to-use python and dependencies            
-            // var pythonPath = @"..\python36;..\python36\Scripts;";
-            // var pythonHome = @"..\python36";
-            // var pythonLib = @"..\python36\Lib";
+            var pythonPath = @"C:\Users\world\miniconda3;" +
+                @"C:\Users\world\miniconda3\Scripts;" +
+                @"C:\Users\world\miniconda3\Library\bin;" +
+                @"C:\Users\world\miniconda3\Library;C:\Users\world\miniconda3\Library\mingw-w64\bin;";
+            var pythonHome = @"C:\Users\world\miniconda3";
+            var pythonLib = @"C:\Users\world\miniconda3\Lib;";
             
-            // // if PYTHON path field not in path then:
-            // if (!Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine).Contains(pythonPath)) {
-            //     string path = pythonPath + Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
-            //     Environment.SetEnvironmentVariable("PATH", path, EnvironmentVariableTarget.Process);
-            // }
-            // Environment.SetEnvironmentVariable("PYTHONHOME", pythonHome, EnvironmentVariableTarget.Process);
-            // Environment.SetEnvironmentVariable("PYTHONPATH ", pythonLib, EnvironmentVariableTarget.Process);            
+            // if PYTHON path field not in path then:
+            if (!Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine).Contains(pythonPath)) {
+                string path = pythonPath + Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
+                Environment.SetEnvironmentVariable("PATH", path, EnvironmentVariableTarget.Process);
+            }
+            Environment.SetEnvironmentVariable("PYTHONHOME", pythonHome, EnvironmentVariableTarget.Process);
+            Environment.SetEnvironmentVariable("PYTHONPATH ", pythonLib, EnvironmentVariableTarget.Process);            
             using (Py.GIL())
             {
                 Init();
@@ -130,21 +136,21 @@ namespace image_indexer
                 var imageList = ImportData(path);
 
                 // featurize data:
+                Console.WriteLine("Featurizing data");
                 var featurizedData = Featurize(imageList);
                 
                 // build index
+                Console.WriteLine("Building index");
                 var dimension = 62720;
-                dynamic quantiser = faiss.IndexFlatL2(dimension);  
-                dynamic index = faiss.IndexIVFFlat(quantiser, dimension , 3, faiss.METRIC_L2);
+                dynamic index = faiss.index_factory(dimension, "Flat", faiss.METRIC_INNER_PRODUCT);// use the cosine similaritys
                 
-                index.train(featurizedData);
+                // x is already normalized
                 index.add(featurizedData);
 
                 // search for image
-                var imageToSearch = featurizedData[0];
-                var hits = index.search(imageToSearch, 3);
-                Console.WriteLine("hits: " + String.Join(", ", hits));
-
+                var imageToSearch = numpy.expand_dims(featurizedData[0], 0);
+                var hits = index.search(imageToSearch, 8)[1][0];
+                
                 showHits(imageList, imageList[0], hits);
             }
         }

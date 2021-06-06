@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <Reference Include="Python.Runtime">
-      <HintPath>C:\Users\world\AppData\Local\Programs\Python\Python36\Lib\site-packages\Python.Runtime.dll</HintPath>
+      <HintPath>C:\Users\world\miniconda3\Lib\site-packages\Python.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   
