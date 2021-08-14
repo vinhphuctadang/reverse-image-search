@@ -109,6 +109,7 @@ namespace image_indexer
             }
             plt.show();
         }
+
         static void Main(string[] args)
         {
             // // config path for ready-to-use python and dependencies            
@@ -124,6 +125,7 @@ namespace image_indexer
                 string path = pythonPath + Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
                 Environment.SetEnvironmentVariable("PATH", path, EnvironmentVariableTarget.Process);
             }
+
             Environment.SetEnvironmentVariable("PYTHONHOME", pythonHome, EnvironmentVariableTarget.Process);
             Environment.SetEnvironmentVariable("PYTHONPATH ", pythonLib, EnvironmentVariableTarget.Process);            
             using (Py.GIL())
@@ -150,8 +152,10 @@ namespace image_indexer
                 // search for image
                 var imageToSearch = numpy.expand_dims(featurizedData[0], 0);
                 var hits = index.search(imageToSearch, 8)[1][0];
-                
                 showHits(imageList, imageList[0], hits);
+
+                // save index
+                faiss.write_index(index, "sample.index");
             }
         }
     }
